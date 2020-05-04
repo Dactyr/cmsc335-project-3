@@ -2,14 +2,12 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.util.Random;
 
-public class Ball implements Drawable, Runnable {
+public class Ball implements Drawable, Updatable {
 	private int x;
 	private int y;
 	private int deltaX;
 	private int deltaY;
 	private int radius;
-
-	private Thread thread;
 
 	public Ball() {
 		Random r = new Random();
@@ -19,15 +17,14 @@ public class Ball implements Drawable, Runnable {
 		deltaY = (r.nextInt() % 11) + 1;
 		radius = (r.nextInt() % 51) + 20;
 
-		thread = new Thread(this);
-		thread.start();
-
 		Entities.getInstance().add(this);
+
+		PausableThread thread = new PausableThread(this);
+		thread.start();
 	}
 
 	@Override
-	public void run() {
-	    while (true) {
+	public void update() {
 		x += deltaX;
 		y += deltaY;
 
@@ -57,7 +54,6 @@ public class Ball implements Drawable, Runnable {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-	    }
 	}
 
 	@Override
