@@ -1,9 +1,8 @@
-import java.awt.Dimension;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
-import javax.swing.JButton;
+import javax.swing.BoxLayout;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
@@ -14,7 +13,7 @@ class Project3 {
 	private static final Lock w = runningLock.writeLock();
 	private static final Condition restarted = w.newCondition();
 
-	private static boolean running = true;
+	private static boolean running = false;
 
 	public static boolean isRunning() {
 		r.lock();
@@ -39,9 +38,9 @@ class Project3 {
 	public static void waitForRestart() {
 		w.lock();
 		try {
-		    while (!running) {
-			restarted.await();
-		    }
+			while (!running) {
+				restarted.await();
+			}
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		} finally {
@@ -50,31 +49,16 @@ class Project3 {
 	}
 
 	public static void main(String[] args) {
-
-		for (int i = 0; i < 40; i++) {
-			new Ball();
-		}
-
 		JFrame window = new JFrame("Project 3");
-		JButton button = new JButton("Pause");
-		JPanel pane = new JPanel();
-		button.setPreferredSize(new Dimension(100, 25));
-		button.addActionListener(e -> {
-			if (isRunning()) {
-				isRunning(false);
-				button.setText("Restart");
-			} else {
-				isRunning(true);
-				button.setText("Pause");
-			}
-		});
 
+		JPanel pane = new JPanel();
+		pane.setLayout(new BoxLayout(pane, BoxLayout.PAGE_AXIS));
+
+		pane.add(new ControlPanel());
 		pane.add(new SimulationPanel());
-		pane.add(button);
 		window.setContentPane(pane);
 
 		window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		window.setResizable(false);
 		window.pack();
 		window.setLocationRelativeTo(null);
 		window.setVisible(true);
