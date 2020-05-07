@@ -1,7 +1,7 @@
 import java.util.Optional;
 import java.awt.Color;
 import java.awt.event.ActionListener;
-
+import java.awt.GridLayout;
 import java.awt.Dimension;
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
@@ -16,6 +16,8 @@ public class CarRow extends JPanel {
 
 	private class InputField extends JPanel implements DocumentListener {
 		private static final long serialVersionUID = 1L;
+		private final Dimension textFieldSize = new Dimension(50, 20);
+		private final Dimension labelSize = new Dimension(50, 20);
 
 		private final JLabel label;
 		private final JTextField textField;
@@ -24,9 +26,15 @@ public class CarRow extends JPanel {
 			this.setLayout(new BoxLayout(this, BoxLayout.LINE_AXIS));
 
 			this.label = new JLabel(label);
+			this.label.setPreferredSize(labelSize);
+			this.label.setMinimumSize(labelSize);
+			this.label.setMaximumSize(labelSize);
+
 			this.textField = new JTextField();
 			this.textField.getDocument().addDocumentListener(this);
-			this.textField.setSize(10, 20);
+			this.textField.setPreferredSize(textFieldSize);
+			this.textField.setMinimumSize(textFieldSize);
+			this.textField.setMaximumSize(textFieldSize);
 
 			this.add(this.label);
 			this.add(this.textField);
@@ -103,8 +111,7 @@ public class CarRow extends JPanel {
 	private JButton button = new JButton("save");
 
 	public CarRow() {
-		this.setLayout(new BoxLayout(this, BoxLayout.LINE_AXIS));
-
+		this.setLayout(new GridLayout(1, 4));
 		this.add(this.xInput);
 		this.add(this.yInput);
 		this.add(this.speedInput);
