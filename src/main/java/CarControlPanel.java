@@ -17,6 +17,10 @@ public class CarControlPanel extends JPanel {
 			button.setEnabled(false);
 			CarRow row = new CarRow();
 			row.addActionListener(e2 -> {
+				new Car(row.getXInput().get(),
+					row.getYInput().get(),
+					row.getSpeedInput().get(),
+					row);
 				row.setEditable(false);
 				button.setEnabled(true);
 			});

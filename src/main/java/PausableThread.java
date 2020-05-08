@@ -2,6 +2,7 @@ public class PausableThread implements Runnable {
 
 	private Thread thread = null;
 	private Updatable updatable;
+	private boolean stopped = false;
 
 	public PausableThread(Updatable o) {
 		this.updatable = o;
@@ -16,7 +17,7 @@ public class PausableThread implements Runnable {
 
 	@Override
 	public void run() {
-		while (true) {
+		while (!stopped) {
 			if (Project3.isRunning()) {
 				this.updatable.update();
 			} else {
@@ -24,6 +25,10 @@ public class PausableThread implements Runnable {
 			}
 		}
 
+	}
+
+	public void stop() {
+		this.stopped = true;
 	}
 
 }
