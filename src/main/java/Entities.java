@@ -1,5 +1,6 @@
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.Iterator;
 
 public class Entities implements Iterable<Drawable> {
@@ -23,6 +24,20 @@ public class Entities implements Iterable<Drawable> {
 	@Override
 	public Iterator<Drawable> iterator() {
 		return this.entities.iterator();
+	}
+
+	public double maxXLocation() {
+		return this.entities.stream()
+		    .max(Comparator.comparing(Drawable::getXLocation))
+		    .get()
+		    .getXLocation();
+	}
+
+	public double minXLocation() {
+	    return this.entities.stream()
+		    .min(Comparator.comparing(Drawable::getXLocation))
+		    .get()
+		    .getXLocation();
 	}
 
 }

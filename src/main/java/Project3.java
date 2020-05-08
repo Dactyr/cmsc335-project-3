@@ -55,7 +55,7 @@ class Project3 {
 		pane.setLayout(new BoxLayout(pane, BoxLayout.PAGE_AXIS));
 
 		pane.add(new ControlPanel());
-		pane.add(new SimulationPanel());
+		pane.add(SimulationPanel.getInstance());
 		window.setContentPane(pane);
 
 		window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);

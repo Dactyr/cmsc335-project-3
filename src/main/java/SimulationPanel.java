@@ -1,9 +1,17 @@
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 
+import javax.swing.BorderFactory;
 import javax.swing.JPanel;
 
 public class SimulationPanel extends JPanel implements Updatable {
+
+	private static SimulationPanel INSTANCE = new SimulationPanel();
+
+	public static SimulationPanel getInstance() {
+		return INSTANCE;
+	}
 
 	private static final long serialVersionUID = 1L;
 	public static final int WIDTH = 640;
@@ -12,9 +20,19 @@ public class SimulationPanel extends JPanel implements Updatable {
 	private static final long TARGET_FRAME_TIME_IN_NS = 1_000_000_000 / TARGET_FPS;
 
 	private long lastLoopTimeNs = System.nanoTime();
+	private Entities entities = Entities.getInstance();
 
-	public SimulationPanel() {
-		setPreferredSize(new Dimension(WIDTH, HEIGHT));
+	private SimulationPanel() {
+		this.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+	}
+
+	public int getXInPixelsFromXInMeters(double xInMeters) {
+		double totalSpaceInMeters = this.entities.maxXLocation() - this.entities.minXLocation();
+		double percentThroughTotalSpace = xInMeters / totalSpaceInMeters;
+		double thatPercentOfTotalPixels = percentThroughTotalSpace * this.getWidth();
+		System.out.println("this width = " + this.getWidth());
+
+		return (int) Math.round(thatPercentOfTotalPixels);
 	}
 
 	@Override
@@ -27,7 +45,7 @@ public class SimulationPanel extends JPanel implements Updatable {
 	@Override
 	public void paintComponent(Graphics g) {
 		super.paintComponent(g);
-		for (Drawable o : Entities.getInstance()) {
+		for (Drawable o : this.entities) {
 			o.draw(g);
 		}
 	}

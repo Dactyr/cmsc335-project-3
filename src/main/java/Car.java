@@ -12,7 +12,7 @@ public class Car implements Drawable, Updatable {
 	private CarRow row;
 	private PausableThread thread;
 
-    public Car(double x, double y, double speedPerSec, CarRow row) {
+	public Car(double x, double y, double speedPerSec, CarRow row) {
 		this.x = x;
 		this.y = y;
 		this.speedPerTick = speedPerSec / TICKS_PER_SECOND;
@@ -26,7 +26,7 @@ public class Car implements Drawable, Updatable {
 
 	@Override
 	public void update() {
-	    System.out.println("updating");
+		System.out.println("updating");
 
 		this.x += this.speedPerTick;
 		System.out.println("x = " + this.x);

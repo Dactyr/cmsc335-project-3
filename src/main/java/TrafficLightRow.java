@@ -99,6 +99,7 @@ public class TrafficLightRow extends JPanel {
 	private InputField green = new InputField("Sec Green:");
 	private InputField yellow = new InputField("Sec Yellow:");
 	private InputField red = new InputField("Sec Red:");
+	private InputField xInput = new InputField("X:");
 	private JButton button = new JButton("save");
 
 	public TrafficLightRow() {
@@ -107,11 +108,13 @@ public class TrafficLightRow extends JPanel {
 		this.add(this.green);
 		this.add(this.yellow);
 		this.add(this.red);
+		this.add(this.xInput);
 		this.add(this.button);
 
-		this.setGreen(0);
-		this.setYellow(0);
-		this.setRed(10);
+		this.setGreen(96);
+		this.setYellow(24);
+		this.setRed(96);
+		this.setXInput(0);
 
 		this.button.addActionListener(e -> {
 			this.remove(this.button);
@@ -160,6 +163,18 @@ public class TrafficLightRow extends JPanel {
 		this.red.setText(Double.toString(val));
 	}
 
+    	public Optional<Double> getXInput() {
+		try {
+			return Optional.of(Double.parseDouble(this.xInput.getText()));
+		} catch (Exception ex) {
+			return Optional.empty();
+		}
+	}
+
+	public void setXInput(double val) {
+		this.xInput.setText(Double.toString(val));
+	}
+
 	public boolean isEditable() {
 		return this.green.isEditable();
 	}
@@ -168,6 +183,7 @@ public class TrafficLightRow extends JPanel {
 		this.green.setEditable(val);
 		this.yellow.setEditable(val);
 		this.red.setEditable(val);
+		this.xInput.setEditable(val);
 	}
 
 	public void addActionListener(ActionListener l) {
