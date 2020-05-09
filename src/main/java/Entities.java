@@ -27,17 +27,19 @@ public class Entities implements Iterable<Drawable> {
 	}
 
 	public double maxXLocation() {
-		return this.entities.stream()
-		    .max(Comparator.comparing(Drawable::getXLocation))
-		    .get()
-		    .getXLocation();
+		if (this.entities.isEmpty()) {
+			return 0;
+		} else {
+			return this.entities.stream().max(Comparator.comparing(Drawable::getXLocation)).get().getXLocation();
+		}
 	}
 
 	public double minXLocation() {
-	    return this.entities.stream()
-		    .min(Comparator.comparing(Drawable::getXLocation))
-		    .get()
-		    .getXLocation();
+		if (this.entities.isEmpty()) {
+			return 0;
+		} else {
+			return this.entities.stream().min(Comparator.comparing(Drawable::getXLocation)).get().getXLocation();
+		}
 	}
 
 }

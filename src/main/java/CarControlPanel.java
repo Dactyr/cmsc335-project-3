@@ -23,6 +23,7 @@ public class CarControlPanel extends JPanel {
 					row);
 				row.setEditable(false);
 				button.setEnabled(true);
+				SimulationPanel.getInstance().update();
 			});
 			carRows.add(row);
 			this.revalidate();

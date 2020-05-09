@@ -1,5 +1,4 @@
 import java.awt.Color;
-import java.awt.Dimension;
 import java.awt.Graphics;
 
 import javax.swing.BorderFactory;
@@ -48,6 +47,16 @@ public class SimulationPanel extends JPanel implements Updatable {
 		for (Drawable o : this.entities) {
 			o.draw(g);
 		}
+
+		String min = String.format("%.1f", this.entities.minXLocation());
+		String max = String.format("%.1f", this.entities.maxXLocation());
+
+		int fontHeight = g.getFontMetrics().getHeight();
+		int y = this.getHeight() - fontHeight;
+
+		g.setColor(Color.BLACK);
+		g.drawString(min, 10, y);
+		g.drawString(max, this.getWidth() - g.getFontMetrics().stringWidth(max) - 10, y);
 	}
 
 	@Override

@@ -20,6 +20,7 @@ public class TrafficLightControlPanel extends JPanel {
 						row.getXInput().get());
 				row.setEditable(false);
 				button.setEnabled(true);
+				SimulationPanel.getInstance().update();
 			});
 			trafficLightRows.add(row);
 			this.revalidate();

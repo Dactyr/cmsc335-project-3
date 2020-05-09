@@ -23,13 +23,13 @@ public class TrafficLight implements Drawable {
 
 	@Override
 	public void draw(Graphics g) {
-		final int length = 10;
-		final int height = 20;
+		final int length = 30;
+		final int height = 60;
 
 		int location = SimulationPanel.getInstance().getXInPixelsFromXInMeters(this.x);
 
 		g.setColor(this.getColor());
-		g.fillRect(location,
+		g.fillRect(location - (length / 2),
 			   0,
 			   length,
 			   height);

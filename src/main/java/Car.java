@@ -1,16 +1,18 @@
 import java.awt.Color;
 import java.awt.Graphics;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 public class Car implements Drawable, Updatable {
-	private static int TICKS_PER_SECOND = 60;
+	private static int TICKS_PER_SECOND = 30;
 	private static final long TICK_TIME_IN_NS = 1_000_000_000 / TICKS_PER_SECOND;
 
+	private final ReentrantReadWriteLock xLock = new ReentrantReadWriteLock();
 	private double x;
-	private double y;
-	private double speedPerTick;
+	private final double y;
+	private final double speedPerTick;
 	private long lastLoopTimeNs = System.nanoTime();
-	private CarRow row;
-	private PausableThread thread;
+	private final CarRow row;
+	private final PausableThread thread;
 
 	public Car(double x, double y, double speedPerSec, CarRow row) {
 		this.x = x;
@@ -26,16 +28,17 @@ public class Car implements Drawable, Updatable {
 
 	@Override
 	public void update() {
-		System.out.println("updating");
+		System.out.println("Updating");
 
-		this.x += this.speedPerTick;
-		System.out.println("x = " + this.x);
+		this.incrementXLocation(this.speedPerTick);
 
-		this.row.setXInput(this.x);
+		System.out.println("Location incremented");
 
-		if (this.x > SimulationPanel.WIDTH) {
-			this.thread.stop();
-		}
+		// this.row.setXInput(this.getXLocation());
+		// System.out.println("set x");
+
+		// this.row.setYInput(this.getYLocation());
+		// System.out.println("set y");
 
 		// Figure out how long to sleep this thread for
 		try {
@@ -54,7 +57,32 @@ public class Car implements Drawable, Updatable {
 	public void draw(Graphics g) {
 		final int radius = 20;
 		g.setColor(Color.BLUE);
-		g.fillOval((int) x, (int) y, radius * 2, radius * 2);
+
+		int location = SimulationPanel.getInstance().getXInPixelsFromXInMeters(this.getXLocation());
+		g.fillOval(location - radius, (int)y, radius * 2, radius * 2);
+	}
+
+	@Override
+	public double getXLocation() {
+		this.xLock.readLock().lock();
+		try {
+			return this.x;
+		} finally {
+			this.xLock.readLock().unlock();
+		}
+	}
+
+	public void incrementXLocation(double val) {
+		this.xLock.writeLock().lock();
+		try {
+			this.x += val;
+		} finally {
+			this.xLock.writeLock().unlock();
+		}
+	}
+
+	public double getYLocation() {
+		return this.y;
 	}
 
 }
