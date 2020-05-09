@@ -3,7 +3,7 @@ import java.awt.Graphics;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 public class Car implements Drawable, Updatable {
-	private static int TICKS_PER_SECOND = 30;
+	private static int TICKS_PER_SECOND = 60;
 	private static final long TICK_TIME_IN_NS = 1_000_000_000 / TICKS_PER_SECOND;
 
 	private final ReentrantReadWriteLock xLock = new ReentrantReadWriteLock();
