@@ -12,18 +12,27 @@ public class Entities implements Iterable<Drawable> {
 	}
 
 	private final Collection<Drawable> entities;
+	private final Collection<TrafficLight> trafficLights;
 
 	private Entities() {
 		entities = new ArrayList<Drawable>();
+		trafficLights = new ArrayList<TrafficLight>();
 	}
 
 	public boolean add(Drawable o) {
+		if (o instanceof TrafficLight) {
+			this.trafficLights.add((TrafficLight) o);
+		}
 		return this.entities.add(o);
 	}
 
 	@Override
 	public Iterator<Drawable> iterator() {
 		return this.entities.iterator();
+	}
+
+	public Iterable<TrafficLight> trafficLights() {
+		return this.trafficLights;
 	}
 
 	public double maxXLocation() {

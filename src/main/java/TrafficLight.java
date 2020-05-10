@@ -1,22 +1,39 @@
 import java.awt.Color;
 import java.awt.Graphics;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 public class TrafficLight implements Drawable {
-	private static final long NANOSECONDS_PER_SECOND = 1_000_000_000L;
+	public static final int HEIGHT = 60;
 
-	private final double timeGreenInNs;
-	private final double timeYellowInNs;
-	private final double timeRedInNs;
+	private final double timeGreen;
+	private final double timeYellow;
+	private final double timeRed;
 	private final double x;
-	private final double y;
-	private final long startTimeInNs = System.nanoTime();
+
+	private final ReentrantReadWriteLock lock = new ReentrantReadWriteLock();
+	private long timeRunningInSec = 0L;
 
 	public TrafficLight(double greenInSec, double yellowInSec, double redInSec, double x) {
-		this.timeGreenInNs = greenInSec * NANOSECONDS_PER_SECOND;
-		this.timeYellowInNs = yellowInSec * NANOSECONDS_PER_SECOND;
-		this.timeRedInNs = redInSec * NANOSECONDS_PER_SECOND;
+		this.timeGreen = greenInSec;
+		this.timeYellow = yellowInSec;
+		this.timeRed = redInSec;
 		this.x = x;
-		this.y = 0;
+
+		PausableThread timer = new PausableThread(() -> {
+			try {
+				Thread.sleep(1_000);
+			} catch (InterruptedException e) {
+				// ignore
+			}
+
+			this.lock.writeLock().lock();
+			try {
+				this.timeRunningInSec++;
+			} finally {
+				this.lock.writeLock().unlock();
+			}
+		});
+		timer.start();
 
 		Entities.getInstance().add(this);
 	}
@@ -24,40 +41,44 @@ public class TrafficLight implements Drawable {
 	@Override
 	public void draw(Graphics g) {
 		final int length = 30;
-		final int height = 60;
 
 		int location = SimulationPanel.getInstance().getXInPixelsFromXInMeters(this.x);
 
 		g.setColor(this.getColor());
-		g.fillRect(location - (length / 2),
-			   0,
-			   length,
-			   height);
+		g.fillRect(location - (length / 2), 0, length, HEIGHT);
 	}
 
-	private double cycleTimeInNs() {
-		return this.timeGreenInNs + this.timeYellowInNs + this.timeRedInNs;
+	private double cycleTime() {
+		return this.timeGreen + this.timeYellow + this.timeRed;
 	}
 
-	private double nsIntoCurrentCycle() {
-		return (System.nanoTime() - this.startTimeInNs) % this.cycleTimeInNs();
+	private double timeIntoCurrentCycle() {
+	    this.lock.readLock().lock();
+	    try {
+		return this.timeRunningInSec % this.cycleTime();
+	    } finally {
+		this.lock.readLock().unlock();
+	    }
 	}
 
 	private Color getColor() {
-		double currentTime = this.nsIntoCurrentCycle();
-		if (currentTime <= this.timeGreenInNs) {
+		double currentTime = this.timeIntoCurrentCycle();
+		if (currentTime <= this.timeGreen) {
 			return Color.GREEN;
-		} else if (currentTime <= (this.timeGreenInNs + this.timeYellowInNs)) {
+		} else if (currentTime <= (this.timeGreen + this.timeYellow)) {
 			return Color.YELLOW;
 		} else {
 			return Color.RED;
 		}
 	}
 
+	public boolean isRed() {
+		return this.getColor() == Color.RED;
+	}
+
 	@Override
 	public double getXLocation() {
 		return this.x;
 	}
-
 
 }

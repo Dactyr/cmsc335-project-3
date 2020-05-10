@@ -16,8 +16,6 @@ public class CarRow extends JPanel {
 
 	private class InputField extends JPanel implements DocumentListener {
 		private static final long serialVersionUID = 1L;
-		private final Dimension textFieldSize = new Dimension(50, 20);
-		private final Dimension labelSize = new Dimension(50, 20);
 
 		private final JLabel label;
 		private final JTextField textField;
@@ -26,16 +24,8 @@ public class CarRow extends JPanel {
 			this.setLayout(new BoxLayout(this, BoxLayout.LINE_AXIS));
 
 			this.label = new JLabel(label);
-			this.label.setPreferredSize(labelSize);
-			this.label.setMinimumSize(labelSize);
-			this.label.setMaximumSize(labelSize);
-
 			this.textField = new JTextField();
 			this.textField.getDocument().addDocumentListener(this);
-			this.textField.setPreferredSize(textFieldSize);
-			this.textField.setMinimumSize(textFieldSize);
-			this.textField.setMaximumSize(textFieldSize);
-
 			this.add(this.label);
 			this.add(this.textField);
 		}
@@ -45,19 +35,19 @@ public class CarRow extends JPanel {
 			return this.textField.requestFocusInWindow();
 		}
 
-		public String getText() {
+		public synchronized String getText() {
 			return this.textField.getText();
 		}
 
-		public void setText(String val) {
+		public synchronized void setText(String val) {
 			this.textField.setText(val);
 		}
 
-		public boolean isEditable() {
+		public synchronized boolean isEditable() {
 			return this.textField.isEditable();
 		}
 
-		public void setEditable(boolean val) {
+		public synchronized void setEditable(boolean val) {
 			this.textField.setEditable(val);
 		}
 
@@ -67,13 +57,6 @@ public class CarRow extends JPanel {
 				CarRow.this.xInput.textField.setBorder(BorderFactory.createLineBorder(Color.BLACK));
 			} else {
 				CarRow.this.xInput.textField.setBorder(BorderFactory.createLineBorder(Color.RED));
-				valid = false;
-			}
-
-			if (CarRow.this.getYInput().isPresent()) {
-				CarRow.this.yInput.textField.setBorder(BorderFactory.createLineBorder(Color.BLACK));
-			} else {
-				CarRow.this.yInput.textField.setBorder(BorderFactory.createLineBorder(Color.RED));
 				valid = false;
 			}
 
@@ -105,26 +88,25 @@ public class CarRow extends JPanel {
 
 	private static final long serialVersionUID = 1L;
 
-	private InputField xInput = new InputField("X:");
-	private InputField yInput = new InputField("Y:");
-	private InputField speedInput = new InputField("Speed:");
+	private InputField xInput = new InputField("X in meters:");
+	private InputField speedInput = new InputField("Speed in m/s:");
 	private JButton button = new JButton("save");
 
 	public CarRow() {
 		this.setLayout(new GridLayout(1, 4));
 		this.add(this.xInput);
-		this.add(this.yInput);
 		this.add(this.speedInput);
 		this.add(this.button);
 
 		this.setXInput(0);
-		this.setYInput(0);
 		this.setSpeedInput(10);
 
-		this.button.addActionListener(e -> {
-			this.remove(this.button);
-			this.revalidate();
-		});
+		this.button.addActionListener(e -> this.save());
+	}
+
+	public void save() {
+		this.remove(this.button);
+		this.revalidate();
 	}
 
 	@Override
@@ -141,19 +123,7 @@ public class CarRow extends JPanel {
 	}
 
 	public void setXInput(double val) {
-		this.xInput.setText(Double.toString(val));
-	}
-
-	public Optional<Double> getYInput() {
-		try {
-			return Optional.of(Double.parseDouble(this.yInput.getText()));
-		} catch (Exception ex) {
-			return Optional.empty();
-		}
-	}
-
-	public void setYInput(double val) {
-		this.yInput.setText(Double.toString(val));
+		this.xInput.setText(String.format("%.1f", val));
 	}
 
 	public Optional<Double> getSpeedInput() {
@@ -174,7 +144,6 @@ public class CarRow extends JPanel {
 
 	public void setEditable(boolean val) {
 		this.xInput.setEditable(val);
-		this.yInput.setEditable(val);
 		this.speedInput.setEditable(val);
 	}
 

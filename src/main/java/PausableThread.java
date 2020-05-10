@@ -6,13 +6,15 @@ public class PausableThread implements Runnable {
 
 	public PausableThread(Updatable o) {
 		this.updatable = o;
+		this.thread = new Thread(this);
 	}
 
 	public void start() {
-		if (thread == null) {
-			thread = new Thread(this);
-			thread.start();
-		}
+		thread.start();
+	}
+
+	public void setName(String name) {
+		this.thread.setName(name);
 	}
 
 	@Override
@@ -24,7 +26,6 @@ public class PausableThread implements Runnable {
 				Project3.waitForRestart();
 			}
 		}
-
 	}
 
 	public void stop() {

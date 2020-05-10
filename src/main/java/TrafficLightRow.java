@@ -1,7 +1,6 @@
 import java.util.Optional;
 import java.awt.Color;
 import java.awt.event.ActionListener;
-import java.awt.Dimension;
 
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
@@ -116,10 +115,12 @@ public class TrafficLightRow extends JPanel {
 		this.setRed(96);
 		this.setXInput(0);
 
-		this.button.addActionListener(e -> {
-			this.remove(this.button);
-			this.revalidate();
-		});
+		this.button.addActionListener(e -> this.save());
+	}
+
+	public void save() {
+		this.remove(this.button);
+		this.revalidate();
 	}
 
 	@Override
@@ -163,7 +164,7 @@ public class TrafficLightRow extends JPanel {
 		this.red.setText(Double.toString(val));
 	}
 
-    	public Optional<Double> getXInput() {
+	public Optional<Double> getXInput() {
 		try {
 			return Optional.of(Double.parseDouble(this.xInput.getText()));
 		} catch (Exception ex) {

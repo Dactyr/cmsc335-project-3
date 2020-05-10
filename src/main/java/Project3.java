@@ -28,8 +28,7 @@ class Project3 {
 		w.lock();
 		try {
 			running = val;
-			if (running)
-				restarted.signalAll();
+			restarted.signalAll();
 		} finally {
 			w.unlock();
 		}
@@ -38,8 +37,16 @@ class Project3 {
 	public static void waitForRestart() {
 		w.lock();
 		try {
+			System.out.println(String.format("%s: Calling waitForRestart", Thread.currentThread().getName()));
+
 			while (!running) {
+				System.out
+						.println(String.format("%s: Still not runing going to wait", Thread.currentThread().getName()));
+
 				restarted.await();
+
+				System.out.println(String.format("%s: Finished waiting", Thread.currentThread().getName()));
+
 			}
 		} catch (InterruptedException e) {
 			e.printStackTrace();
